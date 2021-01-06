@@ -1,0 +1,257 @@
+local result = {
+    nextActorId = 5,
+    root_actor_id = 0,
+    cameraActorIds = {
+        [1] = 1,
+    },
+    mainCameraId = 1,
+    drawLayerActorIds = {
+    },
+    mode = "Game",
+    dt = 0.016666666666667,
+    actors = {
+        [0] = {
+            childids = {
+                [1] = 1,
+                [2] = 2,
+                [3] = 3,
+            },
+            components = {
+                transform = {
+                    is_active = true,
+                    rotation = 0,
+                    actor_id = 0,
+                    type = "transform",
+                    scale = 1,
+                    position = {
+                        y = 0,
+                        x = 0,
+                        z = 0,
+                    },
+                },
+            },
+            behaviours = {
+            },
+            id = 0,
+        },
+        [1] = {
+            parentid = 0,
+            behaviours = {
+                editor_camera_controller = {
+                    should = {
+                        disable = false,
+                        awake = true,
+                        enable = true,
+                        update = true,
+                        destroy = false,
+                    },
+                },
+            },
+            childids = {
+            },
+            components = {
+                transform = {
+                    is_active = true,
+                    rotation = 0,
+                    actor_id = 1,
+                    type = "transform",
+                    scale = 1,
+                    position = {
+                        y = 0,
+                        x = 0,
+                        z = 0,
+                    },
+                },
+                camera = {
+                    clearColor = {
+                        [1] = 0.09,
+                        [2] = 0.09,
+                        [3] = 0.12,
+                        [4] = 1,
+                    },
+                    actor_id = 1,
+                    is_active = true,
+                    type = "camera",
+                    aspectRatio = 1.6,
+                    minWorldSpaceCameraExtents = 1,
+                    zoom = 0.05,
+                },
+            },
+            id = 1,
+        },
+        [2] = {
+            parentid = 0,
+            behaviours = {
+                tilemap_builder = {
+                    should = {
+                        disable = false,
+                        awake = true,
+                        enable = true,
+                        update = true,
+                        destroy = false,
+                    },
+                },
+            },
+            childids = {
+            },
+            components = {
+                transform = {
+                    is_active = true,
+                    rotation = 0,
+                    actor_id = 2,
+                    type = "transform",
+                    scale = 1,
+                    position = {
+                        y = 0,
+                        x = 0,
+                        z = 0,
+                    },
+                },
+                tile_map = {
+                    numchunksx = 1,
+                    chunkrows = 5,
+                    chunkActorIds = {
+                    },
+                    numchunksy = 1,
+                    chunksbyindex = {
+                    },
+                    chunkcols = 5,
+                    type = "tile_map",
+                    is_active = true,
+                    actor_id = 2,
+                },
+            },
+            id = 2,
+        },
+        [3] = {
+            parentid = 0,
+            behaviours = {
+                character_controller = {
+                    should = {
+                        disable = false,
+                        awake = true,
+                        enable = true,
+                        update = true,
+                        destroy = false,
+                    },
+                },
+                worldbasesaver = {
+                    should = {
+                        disable = false,
+                        awake = true,
+                        enable = true,
+                        update = true,
+                        destroy = false,
+                    },
+                },
+                chunkstreamer = {
+                    should = {
+                        disable = false,
+                        awake = true,
+                        enable = true,
+                        update = true,
+                        destroy = false,
+                    },
+                },
+                draw = {
+                    should = {
+                        disable = false,
+                        awake = true,
+                        enable = true,
+                        update = true,
+                        destroy = false,
+                    },
+                },
+            },
+            childids = {
+                [1] = 4,
+                [2] = 4,
+            },
+            components = {
+                transform = {
+                    is_active = true,
+                    rotation = 0,
+                    actor_id = 3,
+                    type = "transform",
+                    scale = 0.9,
+                    position = {
+                        y = 0,
+                        x = 0,
+                        z = 0,
+                    },
+                },
+                drawable = {
+                    is_active = true,
+                    actor_id = 3,
+                    color = {
+                        [1] = 1,
+                        [2] = 1,
+                        [3] = 1,
+                        [4] = 1,
+                    },
+                    type = "drawable",
+                    drawLayer = "Foreground",
+                    rect = {
+                        right = 0.45,
+                        left = -0.45,
+                        bottom = 0,
+                        top = 1.5,
+                    },
+                    opacity = 1,
+                },
+            },
+            id = 3,
+        },
+        [4] = {
+            parentid = 3,
+            behaviours = {
+                draw = {
+                    should = {
+                        disable = false,
+                        awake = true,
+                        enable = true,
+                        update = true,
+                        destroy = false,
+                    },
+                },
+            },
+            childids = {
+            },
+            components = {
+                transform = {
+                    is_active = true,
+                    rotation = 0,
+                    actor_id = 4,
+                    type = "transform",
+                    scale = 0.5,
+                    position = {
+                        y = 0.75,
+                        x = 0.5,
+                        z = 0,
+                    },
+                },
+                drawable = {
+                    is_active = true,
+                    actor_id = 4,
+                    color = {
+                        [1] = 1,
+                        [2] = 0,
+                        [3] = 0,
+                        [4] = 1,
+                    },
+                    type = "drawable",
+                    drawLayer = "Foreground",
+                    rect = {
+                        right = 0.5,
+                        left = -0.5,
+                        bottom = -0.5,
+                        top = 0.5,
+                    },
+                    opacity = 1,
+                },
+            },
+            id = 4,
+        },
+    },
+}
+return result

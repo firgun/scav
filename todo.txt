@@ -1,0 +1,97 @@
+
+[x] have behaviours declare their component requirements and inject them into the behaviour so we don't have
+    to call FindComponent manually and check it's result etc.
+[x] create an example suitable for testing if world to screen transformation logic is working correctly
+[x] implement  world to screen camera transformation
+
+[x] implement world serialization
+
+[x] stress test world serialization with 1000 entities (gulp, it's already a couple k at >100 entities), it works fine, so we could create chunks of 1000 entities
+
+[x] entity transform scaling
+-- [_] entity transform rotation (have to put this on the backlog for now, going to
+	refactor transformation stuff to use love api directly instead)
+
+[x] Implement rendering layers
+
+[x] Create character controller
+	* offset and resize character's draw rect, such that it's sitting above the
+		transform position
+	* implement basic movement controls
+
+[x] Create tile map system
+	
+[_] logging system: info, error, warning. write logs to multiple io destinations
+
+[_] in game console, reads log files every so often
+[_] create global configuration system
+[_] test configuration system with console
+
+[_] create an event system occluder thingy
+
+[_] scale editor camera movement speed relative to zoom
+	* i.e. should move faster if more zoomed out and slower if more zoomed in. Also, zoom speed should be faster when more zoomed in and slower when more zoomed out
+
+[_] do editor gizmo system, whereby entities can be configured to show certain gizmos
+
+[_] refactoring drawing code to use loves transformation API ...
+		* See the following functions
+		* love.graphics.push()
+		* love.graphics.translate()
+		* love.graphics.scale()
+		* love.graphics.rotate()
+		* love.graphics.pop()
+
+[_] Implement parent transformed entities
+
+---
+
+I've realised something really important, the game world is fundamentally oriented according to the player
+within a space too large to represent all together. That is, we must reveal the space over time, at any given
+point in time only show the player a slice of the larger space.
+
+We must only show a small slice of the world at any given point in time ...
+
+This is the key, so being as efficient as possible. We should only ever be doing the work that we ought to. So
+we only need to update 100 entities if there are 100 dynamic entities relevant to the player.
+
+The question is then, what's a good way to represent such a system?
+
+We clearly need to divide the world up into chunks, have some rules about when to touch (load/unload) chunks
+etc.
+
+We also need to store entities in a spatial structure ... but do we need to store them directly in the spatial
+structure or just create the equivelant effect? i.e. we could store them in two lists, on list for relevant
+entities another for active entities.
+
+{
+	chunk {
+		worldposition = { ... }
+		actors = { --[[ a list of actors associated with this chunk ]]-- }
+	}
+}
+
+* Each chunks must be stored persistently in some random access structure (separate files will be the easiest
+in the beginning)
+
+* But then we must convert the serialized chunk to the in game representation ... that is, we must take the
+deserialized chunk data and spawn it's actors in the world?
+
+* When a player moves away from a chunk of things all non-ephemeral things must become irrelevant and perhaps
+unloaded from memory (but not going to think about that just yet).
+
+* when serializing we should just make sure to serialize chunks according to the tile map chunks ... this means
+to me, that the world shouldn't even serialize itself ... we should just decide on some base set of entities
+which we create procedurally, then we just have a ChunkStreamer which controls entities getting created at
+runtime.
+
+* the format of a world is now going to the be a directory ...
+	* some of the world state gets serialized perhaps writing that to some meta data file or something
+	* each chunk collects some entities to include with it's persistent chunk and each persistent chunk
+	  gets written to a separate file where the name is recreateable at runtime to see if there is indeed
+      a chunk in that location
+	* we should make sure that a chunk doesn't select multiple object so we should say the center of the
+	  entity with a bias against top and right (this is because the 'center' of a tile map chunk is not
+      the center of all the tiles and I want to make sure chunks get included.
+	* the above rule can just be hardcoded by finding all the chunks automatically including themselves
+		and all their tiles and then including whatever other actors lie in that chunk too.
