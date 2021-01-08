@@ -64,7 +64,7 @@ register('camera', function()
 	o.clearColor = { 0.09, 0.09, 0.12, 1.0 }
 	o.aspectRatio = windowWidth/windowHeight
 	o.minWorldSpaceCameraExtents = 1.0
-	o.zoom = 0.05
+	o.zoom = 0.5
 	return o
 end)
 

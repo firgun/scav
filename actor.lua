@@ -96,6 +96,7 @@ function SpawnTestActor()
 	local actor = CreateEmptyActor()
 	
 	local d     = addcomponent(actor, 'drawable')
+	d.color     = color.random()
 	d.drawLayer = "Foreground"
 	d.rect      =
 	{

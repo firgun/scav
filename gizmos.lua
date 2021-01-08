@@ -27,7 +27,13 @@ function gizmo.push_rect (center) gizmo._push_command(Command.rect , center) end
 function gizmo.push_line (data  ) gizmo._push_command(Command.line , data  ) end
 function gizmo.push_point(data  ) gizmo._push_command(Command.point, data  ) end
 
+gizmo.show = false
+
 function gizmo.draw()
+	if not gizmo.show then
+		return
+	end
+
 	local camactor, cam, camtransform = xfind(world.mainCameraId, 'camera', 'transform')
 	for _, cmd in pairs(gizmo.commands) do
 		local fn = ({

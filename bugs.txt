@@ -1,0 +1,29 @@
+
+
+The Drag Bug
+
+In editor.lua we use imgui to place a draggable over some selected actor, converting from world
+space to screen space, the drag happens and then the resulting screen coordinates are transformed
+back into world space and the actor's translation is updated.
+
+Two strange things are happening, first the actor is locked into a small area at the origin when
+the dragger is being placed (but not even active). Secondly something that looks like a feedback
+loop issue occurs whereby dragging gets less accurate over time. Strange oscillations occur and
+the actor eventually moves between positive and negative infinity. Like a geometric series with
+a negative factor or something. I am guessing that there is some error occuring, and it's getting
+amplified each frame (that's why it'd remain stable at the origin)
+
+Another strange thing I noticed, when I draw a gizmo immediately to the newly calculated world
+coordinates then there's not amplification style bug. But it look as though the scale of something
+is off and get's worse the further from the origin we are. So this could account for the error,
+would also explain why it's stable at origin, and explain part of the amplification thing. Because
+the error causes the actor to move further away and the next time the error is going to be greater
+forming a feeback loop that amplifies the error.
+
+Here are some ideas to try
+
+* make sure that converting to and from world to screen coordinates results in the same world
+  coordinates. Currently we use some matrix t to convert some points from world to screen and
+  then it's inverse to convert back ... which seems plausibly correct.
+
+  this would eliminate some potentially trivial mistakes I am making ...

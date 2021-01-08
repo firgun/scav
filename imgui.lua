@@ -149,11 +149,11 @@ end
 -- 'low-level' API for building up more complex controls
 --
 
-function ImguiContext:place_dragger(id, x, y, w, h)
+function ImguiContext:place_dragger(id, modx, mody, x, y, w, h)
 	if self.id_active == id then
 		if self.drag_interaction then
-			x = love.mouse.getX() + self.drag_interaction.initial_position.x
-			y = love.mouse.getY() + self.drag_interaction.initial_position.y
+			modx = love.mouse.getX() + self.drag_interaction.initial_position.x
+			mody = love.mouse.getY() + self.drag_interaction.initial_position.y
 		else
 			logger.err('`drag_interaction` is nil, but this id is active?')
 		end
@@ -166,10 +166,11 @@ function ImguiContext:place_dragger(id, x, y, w, h)
 		if not in_rect(love.mouse.getX(), love.mouse.getY(), x, y, w, h) then
 			self.id_hot = nil
 		elseif self.mouse_pressed then
+			self.id_hot    = nil
 			self.id_active = id
 
 			self.drag_interaction = {}
-			self.drag_interaction.initial_position = { x = x - love.mouse.getX(), y = y - love.mouse.getY() }
+			self.drag_interaction.initial_position = { x = modx - love.mouse.getX(), y = mody - love.mouse.getY() }
 		end
 	else
 		if in_rect(love.mouse.getX(), love.mouse.getY(), x, y, w, h) then
@@ -184,7 +185,7 @@ function ImguiContext:place_dragger(id, x, y, w, h)
 		end)
 	end
 
-	return x, y
+	return modx, mody
 end
 
 function ImguiContext:place_label(id, text, x, y, w, h)
@@ -199,7 +200,7 @@ function ImguiContext:place_button(id, text, x, y, w, h)
 
 	local background_color = self.conf.button_background_color
 
-	if self.id_active == id then
+	if self.id_active == id  then
 		background_color = self.conf.button_active_background_color
 
 		if self.mouse_released then
@@ -226,6 +227,47 @@ function ImguiContext:place_button(id, text, x, y, w, h)
 
 		love.graphics.setColor(self.conf.text_color)
 		love.graphics.printf(text, x, y, w, 'center')
+	end)
+
+	return result
+end
+
+function ImguiContext:place_selectable_button(id, selected, x, y, w, h)
+	local result = false
+
+	local background_color = self.conf.button_background_color
+
+	if self.id_active == id  then
+		background_color = self.conf.button_active_background_color
+
+		if self.mouse_released then
+			result = true
+			self.id_active = nil
+		end
+	elseif self.id_hot == id then
+		background_color = self.conf.button_hot_background_color
+
+		if not in_rect(love.mouse.getX(), love.mouse.getY(), x, y, w, h) then
+			self.id_hot = nil
+		elseif self.mouse_pressed then
+			self.id_active = id
+		end
+	else
+		if in_rect(love.mouse.getX(), love.mouse.getY(), x, y, w, h) then
+			self.id_hot = id
+		end
+	end
+
+	if selected then
+		background_color = self.conf.button_hot_background_color
+	end
+
+	renderer:push(function()
+		love.graphics.setColor(background_color)
+		love.graphics.rectangle('fill', x, y, w, h)
+
+		-- love.graphics.setColor(self.conf.text_color)
+		-- love.graphics.printf(text, x, y, w, 'center')
 	end)
 
 	return result
@@ -315,7 +357,7 @@ function ImguiContext:panel_begin(is_open, x, y, title)
 			is_open = false
 		end
 
-		f.x, f.y = self:place_dragger(-500, f.x, f.y, f.w-self.conf.panel_title_bar_height, self.conf.panel_title_bar_height)
+		f.x, f.y = self:place_dragger(-500, f.x, f.x, f.x, f.y, f.w-self.conf.panel_title_bar_height, self.conf.panel_title_bar_height)
 	end
 
 	do

@@ -271,7 +271,7 @@ function character_controller:on_update()
 	end
 
 	if love.keyboard.isDown('space') then
-		transform.rotation = transform.rotation + 0.01
+		transform.rotation = transform.rotation + math.pi * 2 * world.dt
 	end
 
 	gizmo.push_rect(transform.position)

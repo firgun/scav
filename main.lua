@@ -13,7 +13,10 @@ require 'util'
 require 'log'
 require 'component'
 require 'behaviour'
+
 require 'actor'
+require 'actorutil'
+
 require 'gizmos'
 require 'stream'
 require 'draw'
@@ -24,6 +27,9 @@ require 'imgui'
 
 require 'editor'
 require 'console'
+
+require 'color'
+require 'vector'
 
 logger.newdest(io.output()    , logger.level_info, true)
 logger.newdest(default_console, logger.level_info, true)
@@ -39,9 +45,10 @@ end
 
 function love.update(dt)
 	config.update (dt)
-	
+
 	updateworld   (dt)
 
+	
 	editor .update(dt)
 	console.update(dt)
 end
