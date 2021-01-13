@@ -48,7 +48,7 @@ config.base.CONSOLE_SPEED_BLINK = 5
 
 config.base.imgui = {}
 
-config.base.imgui.do_debug_draw = true
+config.base.imgui.do_debug_draw = false
 
 config.base.imgui.cursor_padding = 8
 config.base.imgui.cursor_line_height = 20

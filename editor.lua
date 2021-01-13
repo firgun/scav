@@ -15,6 +15,10 @@ editor.is_open = true
 editor.selected_actor_id = nil
 
 function editor.update()
+	if findp(editor.selected_actor_id) == nil then
+		editor.selected_actor_id = nil
+	end
+
 	do_picking()
 	
 	do_tool_selection_menu_thing()

@@ -71,6 +71,10 @@ local function do_find(actor_or_actor_id, comps)
 		end
 	end
 
+	if not result.actor then
+		return nil
+	end
+
 	for _, c in pairs(comps) do
 		if componenttab[c] then
 			local comp = result.actor.components[c]

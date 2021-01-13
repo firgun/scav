@@ -185,6 +185,8 @@ function ImguiContext:place_dragger(id, modx, mody, x, y, w, h)
 		end)
 	end
 
+	print(modx, mody)
+
 	return modx, mody
 end
 
@@ -331,7 +333,9 @@ function ImguiContext:panel_begin(is_open, x, y, title)
 		return is_open, f.x, f.y
 	end
 
+	local fc = DeepCopy(f)
 	renderer:push(function()
+		local f = fc
 		love.graphics.setScissor(f.x, f.y, f.w, f.h)
 
 		love.graphics.setColor(self.conf.panel_background_color)
@@ -357,7 +361,7 @@ function ImguiContext:panel_begin(is_open, x, y, title)
 			is_open = false
 		end
 
-		f.x, f.y = self:place_dragger(-500, f.x, f.x, f.x, f.y, f.w-self.conf.panel_title_bar_height, self.conf.panel_title_bar_height)
+		f.x, f.y = self:place_dragger(-500, f.x, f.y, f.x, f.y, f.w-self.conf.panel_title_bar_height, self.conf.panel_title_bar_height)
 	end
 
 	do

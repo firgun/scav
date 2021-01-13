@@ -1,29 +1,94 @@
 
 
-The Drag Bug
+Open
+===
 
-In editor.lua we use imgui to place a draggable over some selected actor, converting from world
-space to screen space, the drag happens and then the resulting screen coordinates are transformed
-back into world space and the actor's translation is updated.
+Application performance decays over time
+---
+I think this is a memory leak, when pressing 'P' to reload the world, performance 
+suddenly gets better.
 
-Two strange things are happening, first the actor is locked into a small area at the origin when
-the dragger is being placed (but not even active). Secondly something that looks like a feedback
-loop issue occurs whereby dragging gets less accurate over time. Strange oscillations occur and
-the actor eventually moves between positive and negative infinity. Like a geometric series with
-a negative factor or something. I am guessing that there is some error occuring, and it's getting
-amplified each frame (that's why it'd remain stable at the origin)
+My initial thought was that the behaviour cache is leaking memory every frame or
+something.
 
-Another strange thing I noticed, when I draw a gizmo immediately to the newly calculated world
-coordinates then there's not amplification style bug. But it look as though the scale of something
-is off and get's worse the further from the origin we are. So this could account for the error,
-would also explain why it's stable at origin, and explain part of the amplification thing. Because
-the error causes the actor to move further away and the next time the error is going to be greater
-forming a feeback loop that amplifies the error.
+The application is slowing independent of _rebuilding_ the cache, perhaps it's
+not the cache or just not the rebuilding of the cache anyways
+
+Number of actors seems to stay constant
+
+Maybe try disabling and enabling different modules, maybe it's just the
+console? But it seems to decay even if I don't use the console.
+
+
+General Console Bugs -- UTF-8 error
+---
+Fixing those UTF8 bugs might be a good place to start.
+
+
+Picking actors is completely wrong
+---
+The hit rects of actors seems to be off by 1 (world space unit) and doesn't pay
+attention to the actors orientation.
+
+I'll have to get each of the points in object space convert them to world space
+properly, then check if the mouse's position in world space is inside the
+polygon.
+
+I know where to look to figure out how to do this. The Graphics Codex! I can
+use the implicit line function to check (But first check if love has support
+for hit testing polygons)
+
+Also, make it so picking occurs only when the user presses left mouse or something
+
+
+Fixed
+===
+Dragging causing the panel to jump 
+---
+.. to a different y position, which somehow seems to be related to the x
+position, the larger the x position the further down (the greater the y
+position) the panel jumps when letting go.
+
+It's almost as though I am returning x, x, instead of x, y ...
+
+Dragging, panel contents seem to drag 1 frame behind the panel itself
+---
+Could fix this by just making everything drag 1 frame behind, that would be
+easiest and not that noticeable.
+
+Selection causes crash on world reload
+---
+This one's easy, I just need to make sure I don't hold onto the old selection
+when I reload the world.
+
+Dragging entities doesn't work properly
+---
+In editor.lua we use imgui to place a draggable over some selected actor,
+converting from world space to screen space, the drag happens and then the
+resulting screen coordinates are transformed back into world space and the
+actor's translation is updated.
+
+Two strange things are happening, first the actor is locked into a small area
+at the origin when the dragger is being placed (but not even active). Secondly
+something that looks like a feedback loop issue occurs whereby dragging gets
+less accurate over time. Strange oscillations occur and the actor eventually
+moves between positive and negative infinity. Like a geometric series with a
+negative factor or something. I am guessing that there is some error occuring,
+and it's getting amplified each frame (that's why it'd remain stable at the
+origin)
+
+Another strange thing I noticed, when I draw a gizmo immediately to the newly
+calculated world coordinates then there's not amplification style bug. But it
+look as though the scale of something is off and get's worse the further from
+the origin we are. So this could account for the error, would also explain why
+it's stable at origin, and explain part of the amplification thing. Because the
+error causes the actor to move further away and the next time the error is
+going to be greater forming a feeback loop that amplifies the error.
 
 Here are some ideas to try
 
-* make sure that converting to and from world to screen coordinates results in the same world
-  coordinates. Currently we use some matrix t to convert some points from world to screen and
-  then it's inverse to convert back ... which seems plausibly correct.
-
-  this would eliminate some potentially trivial mistakes I am making ...
+Make sure that converting to and from world to screen coordinates results in
+the same world coordinates. Currently we use some matrix t to convert some
+points from world to screen and then it's inverse to convert back ... which
+seems plausibly correct. This would eliminate some potentially trivial
+mistakes I am making ...
