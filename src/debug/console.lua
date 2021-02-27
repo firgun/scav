@@ -77,7 +77,7 @@ function Console:type(text)
 	end
 
 	-- @HACK(keagan): figure out how modifiers work
-	if text == '`' then
+	if text == '`' or text == '§' then
 		return
 	end
 

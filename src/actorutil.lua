@@ -13,13 +13,15 @@ end
 
 function get_actor_bounds(actor)
 	local result = findp(actor, 'transform', 'drawable')
-	if result and result.transform then
-		local t = result.transform
+	if result and result.transform and result.drawable then
+		local t = transformation.object_world(result.transform)
+
 		local r = result.drawable.rect
-		local m = transformation.object_world(t)
-		local x, y = m:transformPoint(r.left, r.top)
-		local w, h = r.right - r.left, r.top - r.bottom
-		return make_rect(x, y, w, h)
+
+		local min_x, min_y = t:transformPoint(r.left , r.bottom)
+		local max_x, max_y = t:transformPoint(r.right, r.top   )
+
+		return make_rect(min_x, min_y, max_x - min_x, max_y - min_y)
 	else
 		return nil
 	end

@@ -4,7 +4,7 @@ Todo
 Actor refactor [_]
 --
 My version of ECS is not that good, it makes developing subsystems needlessly
-complex by the unnecessary constraint of component separate from data.  I
+complex by the unnecessary constraint of behaviour separate from data.  I
 should have an entity have common components directly stuck on the entity or
 easily accessible from some getter function.
 

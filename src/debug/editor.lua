@@ -15,8 +15,14 @@ editor.is_open = true
 editor.selected_actor_id = nil
 
 function editor.update()
-	if findp(editor.selected_actor_id) == nil then
+	local result = findp(editor.selected_actor_id, 'transform')
+	if not result then
 		editor.selected_actor_id = nil
+	else 
+		gizmo.push_rect({ 
+			x = result.transform.position.x, 
+			y = result.transform.position.y 
+		})
 	end
 
 	do_picking()
@@ -83,15 +89,13 @@ function screen_to_world(x, y)
 end
 
 function do_picking()
+	if not love.mouse.isDown(1) then
+		return
+	end
+
 	local x, y = screen_to_world(love.mouse.getX(), love.mouse.getY())
-
-	gizmo.push_rect({ x = x, y = y })
-
 	for _, a in ipairs(world.actors) do
 		local b = get_actor_bounds(a)
-		if b then
-			gizmo.push_rect({ x = b.x + 0.5, y = b.y - 0.5})
-		end
 		if b and in_rect(x, y, b.x, b.y, b.w, b.h) then
 			editor.selected_actor_id = a.id
 		end
